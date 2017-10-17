@@ -6,7 +6,7 @@ var main = {
   time: 0,
   fps: 60,
   interval: 0,
-  resolution: 3,
+  resolution: 100,
   link: false,
 
   get shouldDraw() {
