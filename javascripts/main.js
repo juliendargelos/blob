@@ -6,8 +6,7 @@ var main = {
   time: 0,
   fps: 60,
   interval: 0,
-  resolution: 100,
-  link: false,
+  resolution: 50,
 
   get shouldDraw() {
     var delta = Date.now() - this.time;
@@ -52,6 +51,10 @@ var main = {
     var point, alpha, noise;
     var time = this.time/3000;
     var points = [];
+
+    this.context.translate(center.x, center.y);
+    this.context.rotate(time/10000000%(Math.PI*2));
+    this.context.translate(-center.x, -center.y);
 
     this.context.strokeStyle = 'rgb(' + [
       Math.min(255, Math.floor(this.simplex.noise2D(time, time)*128 + 170)),
@@ -100,21 +103,6 @@ var main = {
 
     this.context.lineWidth = 2;
     this.context.stroke();
-
-    if(this.link) {
-      this.context.lineWidth = 0.5;
-
-      for(var i = 0; i < points.length; i++) {
-        for(var j = i + 1; j < points.length; j++) {
-          this.context.beginPath();
-          this.context.moveTo(points[i].x, points[i].y);
-          this.context.lineTo(points[j].x, points[j].y);
-          this.context.closePath();
-
-          this.context.stroke();
-        }
-      }
-    }
   },
 
   render: function() {
