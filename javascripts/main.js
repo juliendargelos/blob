@@ -7,7 +7,7 @@ var main = {
   fps: 120,
   interval: 0,
   resolution: 20,
-  rotation: false,
+  rotation: true,
 
   get shouldDraw() {
     var delta = Date.now() - this.time;
@@ -55,7 +55,7 @@ var main = {
 
     if(this.rotation) {
       this.context.translate(center.x, center.y);
-      this.context.rotate(time/10000000%(Math.PI*2));
+      this.context.rotate(time/20000000%(Math.PI*2));
       this.context.translate(-center.x, -center.y);
     }
 
@@ -73,7 +73,7 @@ var main = {
         y: Math.sin(alpha)
       }
 
-      noise = this.simplex.noise3D(point.x, point.y, time)*(this.radius/5);
+      noise = this.simplex.noise3D(point.x, point.y, time)*(this.radius/4);
 
       point.x = point.x * (this.radius + noise) + center.x;
       point.y = point.y * (this.radius + noise) + center.y;
