@@ -4,9 +4,10 @@ var main = {
   simplex: new SimplexNoise(),
   radius: 300,
   time: 0,
-  fps: 60,
+  fps: 120,
   interval: 0,
-  resolution: 50,
+  resolution: 20,
+  rotation: false,
 
   get shouldDraw() {
     var delta = Date.now() - this.time;
@@ -42,7 +43,7 @@ var main = {
   },
 
   clear: function() {
-    this.context.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    this.context.fillStyle = 'rgba(0, 0, 0, 0.04)';
     this.context.fillRect(0, 0, this.width, this.height);
   },
 
@@ -52,9 +53,11 @@ var main = {
     var time = this.time/3000;
     var points = [];
 
-    this.context.translate(center.x, center.y);
-    this.context.rotate(time/10000000%(Math.PI*2));
-    this.context.translate(-center.x, -center.y);
+    if(this.rotation) {
+      this.context.translate(center.x, center.y);
+      this.context.rotate(time/10000000%(Math.PI*2));
+      this.context.translate(-center.x, -center.y);
+    }
 
     this.context.strokeStyle = 'rgb(' + [
       Math.min(255, Math.floor(this.simplex.noise2D(time, time)*128 + 170)),
