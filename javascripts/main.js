@@ -6,7 +6,7 @@ var main = {
   time: 0,
   fps: 60,
   interval: 0,
-  resolution: 300,
+  resolution: 3,
   link: false,
 
   get shouldDraw() {
@@ -59,8 +59,6 @@ var main = {
       Math.min(255, Math.floor(this.simplex.noise2D(time + 4, time + 4)*128 + 170))
     ].join(',') + ')';
 
-    this.context.beginPath();
-
     for(var i = 0; i < this.resolution; i++) {
       alpha = Math.PI*2/this.resolution * i;
 
@@ -74,14 +72,30 @@ var main = {
       point.x = point.x * (this.radius + noise) + center.x;
       point.y = point.y * (this.radius + noise) + center.y;
 
-      this.context.lineTo(
-        point.x,
-        point.y
-      )
-
       points.push(point);
     }
 
+    this.context.beginPath();
+    this.context.moveTo(
+      (points[points.length - 1].x + points[0].x)/2,
+      (points[points.length - 1].y + points[0].y)/2
+    );
+
+    for(var i = 0; i < points.length - 1; i ++) {
+      this.context.quadraticCurveTo(
+        points[i].x,
+        points[i].y,
+        (points[i].x + points[i + 1].x)/2,
+        (points[i].y + points[i + 1].y)/2
+      );
+    }
+
+    this.context.quadraticCurveTo(
+      points[points.length - 1].x,
+      points[points.length - 1].y,
+      (points[points.length - 1].x + points[0].x)/2,
+      (points[points.length - 1].y + points[0].y)/2
+    );
     this.context.closePath();
 
     this.context.lineWidth = 2;
