@@ -2,23 +2,13 @@ var main = {
   canvas: document.querySelector('canvas'),
   context: null,
   simplex: new SimplexNoise(),
-  radius: 300,
+  radius: 500,
   time: 0,
-  fps: 200,
+  fps: 120,
   interval: 0,
   resolution: 15,
   amount: 1,
   rotation: true,
-
-  get shouldDraw() {
-    var delta = Date.now() - this.time;
-
-    if(delta >= this.interval) {
-      this.time += delta;
-      return true;
-    }
-    else return false;
-  },
 
   get width() {
     return this.canvas.width;
@@ -43,6 +33,12 @@ var main = {
     };
   },
 
+  move: function() {
+    var x = this.simplex.noise2D(this.time/7000, 0)*0.1;
+    var y = this.simplex.noise2D((this.time + 10000)/7000, 0)*0.08;
+    this.canvas.style.transform = 'translate(' + (-50 + x*100) + '%, '+ (-50 + y*100) + '%) scale(0.5)'
+  },
+
   clear: function() {
     this.context.fillStyle = 'rgba(0, 0, 0, 0.04)';
     this.context.fillRect(0, 0, this.width, this.height);
@@ -57,14 +53,14 @@ var main = {
 
     this.context.translate(center.x, center.y);
 
-    if(this.rotation) this.context.rotate(time/20000000%(Math.PI*2));
+    if(this.rotation) this.context.rotate(time/80000000000%(Math.PI*2));
 
     this.context.translate(-center.x, -center.y);
 
     this.context.strokeStyle = 'rgb(' + [
-      Math.min(255, Math.floor(this.simplex.noise2D(time, time)*128 + 170)),
-      Math.min(255, Math.floor(this.simplex.noise2D(time + 2, time + 2)*128 + 170)),
-      Math.min(255, Math.floor(this.simplex.noise2D(time + 4, time + 4)*128 + 170))
+      Math.min(255, Math.floor(this.simplex.noise2D(time*0.7, 0)*128 + 170)),
+      Math.min(255, Math.floor(this.simplex.noise2D(time*0.7 + 2, 0)*128 + 170)),
+      Math.min(255, Math.floor(this.simplex.noise2D(time*0.7 + 4, 0)*128 + 170))
     ].join(',') + ')';
 
     for(var i = 0; i < this.resolution; i++) {
@@ -75,7 +71,7 @@ var main = {
         y: Math.sin(alpha)
       }
 
-      noise = this.simplex.noise3D(point.x, point.y, time)*(this.radius/4);
+      noise = this.simplex.noise3D(point.x, point.y, time*0.5)*(this.radius/4);
 
       point.x = point.x * (this.radius + noise) + center.x;
       point.y = point.y * (this.radius + noise) + center.y;
@@ -106,7 +102,7 @@ var main = {
     );
     this.context.closePath();
 
-    this.context.lineWidth = 2;
+    this.context.lineWidth = 4;
     this.context.stroke();
   },
 
@@ -119,12 +115,14 @@ var main = {
   },
 
   update: function() {
-    if(this.shouldDraw) this.render();
+    this.time = Date.now();
+    this.render();
+    // this.move();
   },
 
   resize: function() {
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.width = this.radius*2.5;
+    this.height = this.radius*2.5;
   },
 
   init: function() {
